@@ -13,14 +13,46 @@ class RootsApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0F0F0F), // Глубокий черный
+        scaffoldBackgroundColor: const Color(0xFF121214), 
       ),
-      home: const WelcomeScreen(),
+      home: const AppContainer(),
     );
   }
 }
 
-// --- ЭКРАН 1: ПРИВЕТСТВИЕ ---
+// Обертка, имитирующая скругленное окно
+class AppContainer extends StatelessWidget {
+  const AppContainer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          // ИСПРАВЛЕНО: maxWidth теперь внутри constraints
+          constraints: const BoxConstraints(maxWidth: 450),
+          decoration: BoxDecoration(
+            color: const Color(0xFF121214),
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                // ИСПРАВЛЕНО: используем withValues вместо withOpacity
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 20,
+                spreadRadius: 5,
+              )
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: const WelcomeScreen(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
@@ -29,13 +61,28 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background.png'),
-                fit: BoxFit.cover,
-                // Затемнение для читаемости текста
-                colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.png',
+              fit: BoxFit.cover,
+              color: Colors.black.withValues(alpha: 0.4), // ИСПРАВЛЕНО
+              colorBlendMode: BlendMode.darken,
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.7), // ИСПРАВЛЕНО
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.9), // ИСПРАВЛЕНО
+                  ],
+                  stops: const [0.0, 0.2, 0.7, 1.0],
+                ),
               ),
             ),
           ),
@@ -43,45 +90,57 @@ class WelcomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildHeader(context),
-                const Spacer(),
+                const Spacer(flex: 3),
+                const RootsLogo(),
+                const SizedBox(height: 8),
+                Text(
+                  'Бауманская ул 15',
+                  style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14),
+                ),
+                const Spacer(flex: 5),
                 Text(
                   'ОБНОВИ\nСВОЙ СТИЛЬ',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.montserrat(
-                    fontSize: 48,
+                    fontSize: 42,
                     fontWeight: FontWeight.w900,
-                    height: 1.1,
-                    letterSpacing: -1,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 24),
-                  child: Text(
-                    'выбери пространство, где каждая стрижка создаётся как персональный шедевр',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 15,
-                      color: Colors.white.withOpacity(0.8),
-                      height: 1.4,
-                    ),
+                    height: 1.0,
+                    letterSpacing: 1.2,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ServicesScreen())),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      minimumSize: const Size(double.infinity, 65),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                      elevation: 0,
-                    ),
-                    child: Text('ЗАПИСАТЬСЯ', 
-                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w800, fontSize: 18)
+                  child: Text(
+                    'выбери пространство, где каждая стрижка создаётся как персональный шедевр',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.montserrat(
+                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: 0.7), // ИСПРАВЛЕНО
+                      height: 1.3,
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ServicesScreen()),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      minimumSize: const Size(double.infinity, 55),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      'ЗАПИСАТЬСЯ',
+                      style: GoogleFonts.montserrat(fontWeight: FontWeight.w800, fontSize: 16),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 const Spacer(),
                 _buildBottomNav(0),
               ],
@@ -93,7 +152,6 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
-// --- ЭКРАН 2: ВЫБОР УСЛУГИ ---
 class ServicesScreen extends StatefulWidget {
   const ServicesScreen({super.key});
 
@@ -123,26 +181,28 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121214),
       body: SafeArea(
         child: Column(
           children: [
             _buildHeader(context, showBack: true),
-            Text('ROOTS', style: GoogleFonts.montserrat(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: 2)),
-            Text('men\'s cut', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white54)),
+            const RootsLogo(),
             const SizedBox(height: 4),
-            Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 13, color: Colors.white38)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 25),
-              child: Text('ВЫБЕРИТЕ УСЛУГУ', 
-                style: GoogleFonts.montserrat(fontSize: 24, fontWeight: FontWeight.w800)
-              ),
+            Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white38)),
+            const SizedBox(height: 20),
+            Text(
+              'ВЫБЕРИТЕ УСЛУГУ',
+              style: GoogleFonts.montserrat(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 0.5),
             ),
+            const SizedBox(height: 15),
             TabBar(
               controller: _tabController,
               indicatorColor: const Color(0xFFE91E63),
-              indicatorWeight: 3,
-              labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 13),
+              indicatorSize: TabBarIndicatorSize.label,
+              dividerColor: Colors.transparent,
+              labelColor: Colors.white,
               unselectedLabelColor: Colors.white38,
+              labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 13),
               tabs: const [
                 Tab(text: 'Амбассадор'),
                 Tab(text: 'Мастер-эксперт'),
@@ -151,55 +211,71 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
             ),
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.all(20),
                 itemCount: services.length,
                 itemBuilder: (context, index) {
                   bool isSelected = selectedServiceIndex == index;
                   return GestureDetector(
                     onTap: () => setState(() => selectedServiceIndex = index),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(20),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40), // Тот самый скругленный "вырез"
-                        gradient: isSelected 
-                          ? const LinearGradient(
-                              colors: [Color(0xFFE91E63), Color(0xFF880E4F)], // Градиент из Figma
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ) 
-                          : null,
-                        color: isSelected ? null : const Color(0xFF1E1E1E),
+                        borderRadius: BorderRadius.circular(30),
+                        color: isSelected ? null : const Color(0xFF1C1C1E),
+                        gradient: isSelected
+                            ? const LinearGradient(
+                                colors: [Color(0xFFFFFFFF), Color(0xFFFF4D94), Color(0xFFE91E63)],
+                                stops: [0.0, 0.6, 1.0],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              )
+                            : null,
                       ),
                       child: Row(
                         children: [
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(services[index]['name'], 
-                                  style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w700)),
-                                const SizedBox(height: 4),
-                                Text(services[index]['time'], 
-                                  style: GoogleFonts.montserrat(color: Colors.white60, fontSize: 12)),
-                              ],
+                            child: RichText(
+                              text: TextSpan(
+                                style: GoogleFonts.montserrat(
+                                  color: isSelected ? Colors.black : Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
+                                children: [
+                                  TextSpan(text: services[index]['name']),
+                                  TextSpan(
+                                    text: '  ${services[index]['time']}',
+                                    style: TextStyle(
+                                      color: isSelected ? Colors.black54 : Colors.white38,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          Text(services[index]['price'], 
-                            style: GoogleFonts.montserrat(fontWeight: FontWeight.w800, fontSize: 16)),
-                          const SizedBox(width: 15),
+                          Text(
+                            services[index]['price'],
+                            style: GoogleFonts.montserrat(
+                              color: isSelected ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
                           Container(
-                            width: 24,
-                            height: 24,
+                            width: 20,
+                            height: 20,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
                               color: isSelected ? Colors.white : Colors.transparent,
+                              border: Border.all(
+                                color: isSelected ? Colors.white : Colors.white24,
+                                width: 1.5,
+                              ),
                             ),
-                            child: isSelected 
-                              ? const Icon(Icons.check, size: 16, color: Color(0xFFE91E63)) 
-                              : null,
                           ),
                         ],
                       ),
@@ -218,20 +294,56 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
 
 // --- ВСПОМОГАТЕЛЬНЫЕ ВИДЖЕТЫ ---
 
+class RootsLogo extends StatelessWidget {
+  const RootsLogo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'ROOTS',
+          style: GoogleFonts.montserrat(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.5,
+          ),
+        ),
+        Text(
+          "men's cut",
+          style: GoogleFonts.montserrat(
+            fontSize: 10,
+            fontWeight: FontWeight.w400,
+            color: Colors.white54,
+            height: 0.8,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 Widget _buildHeader(BuildContext context, {bool showBack = false}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        showBack 
-          ? IconButton(icon: const Icon(Icons.arrow_back_ios_new, size: 20), onPressed: () => Navigator.pop(context))
-          : const SizedBox(width: 48),
-        Text('Roots Men’s Cut', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500)),
-        Row(
+        showBack
+            ? GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Icon(Icons.arrow_back, size: 24),
+              )
+            : const SizedBox(width: 24),
+        Text(
+          'Roots Men’s Cut',
+          style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+        const Row(
           children: [
-            IconButton(icon: const Icon(Icons.more_horiz), onPressed: () {}),
-            IconButton(icon: const Icon(Icons.close), onPressed: () {}),
+            Icon(Icons.more_horiz, size: 20),
+            SizedBox(width: 12),
+            Icon(Icons.close, size: 20),
           ],
         ),
       ],
@@ -240,21 +352,32 @@ Widget _buildHeader(BuildContext context, {bool showBack = false}) {
 }
 
 Widget _buildBottomNav(int currentIndex) {
-  return Container(
-    padding: const EdgeInsets.only(top: 15, bottom: 25),
-    decoration: BoxDecoration(
-      color: const Color(0xFF0F0F0F),
-      border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        _navItem(Icons.home_filled, 'ГЛАВНАЯ', currentIndex == 0),
-        _navItem(Icons.content_cut, 'УСЛУГИ', currentIndex == 1),
-        _navItem(Icons.local_offer_outlined, 'АКЦИИ', false),
-        _navItem(Icons.person_outline, 'ПРОФИЛЬ', false),
-      ],
-    ),
+  return Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.05))), // ИСПРАВЛЕНО
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _navItem(Icons.home_filled, 'ГЛАВНАЯ', currentIndex == 0),
+            _navItem(Icons.content_cut, 'УСЛУГИ', currentIndex == 1),
+            _navItem(Icons.percent, 'АКЦИИ', false),
+            _navItem(Icons.person, 'ПРОФИЛЬ', false),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          '@rootsmenscut_bot',
+          style: GoogleFonts.montserrat(fontSize: 10, color: Colors.white24),
+        ),
+      ),
+    ],
   );
 }
 
@@ -262,13 +385,16 @@ Widget _navItem(IconData icon, String label, bool isActive) {
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Icon(icon, color: isActive ? const Color(0xFFE91E63) : Colors.white38, size: 26),
-      const SizedBox(height: 6),
-      Text(label, style: GoogleFonts.montserrat(
-        color: isActive ? Colors.white : Colors.white38, 
-        fontSize: 10, 
-        fontWeight: FontWeight.w600
-      )),
+      Icon(icon, color: isActive ? Colors.white : Colors.white38, size: 24),
+      const SizedBox(height: 4),
+      Text(
+        label,
+        style: GoogleFonts.montserrat(
+          color: isActive ? Colors.white : Colors.white38,
+          fontSize: 9,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     ],
   );
 }
