@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const RootsApp());
@@ -29,14 +30,12 @@ class AppContainer extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Container(
-          // ИСПРАВЛЕНО: maxWidth теперь внутри constraints
           constraints: const BoxConstraints(maxWidth: 450),
           decoration: BoxDecoration(
             color: const Color(0xFF121214),
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                // ИСПРАВЛЕНО: используем withValues вместо withOpacity
                 color: Colors.black.withValues(alpha: 0.5),
                 blurRadius: 20,
                 spreadRadius: 5,
@@ -63,7 +62,7 @@ class WelcomeScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/background.png',
+              'assets/images/bg1.png',
               fit: BoxFit.cover,
               color: Colors.black.withValues(alpha: 0.4), // ИСПРАВЛЕНО
               colorBlendMode: BlendMode.darken,
@@ -183,108 +182,120 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
     return Scaffold(
       backgroundColor: const Color(0xFF121214),
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context, showBack: true),
-            const RootsLogo(),
-            const SizedBox(height: 4),
-            Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white38)),
-            const SizedBox(height: 20),
-            Text(
-              'ВЫБЕРИТЕ УСЛУГУ',
-              style: GoogleFonts.montserrat(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 0.5),
-            ),
-            const SizedBox(height: 15),
-            TabBar(
-              controller: _tabController,
-              indicatorColor: const Color(0xFFE91E63),
-              indicatorSize: TabBarIndicatorSize.label,
-              dividerColor: Colors.transparent,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white38,
-              labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 13),
-              tabs: const [
-                Tab(text: 'Амбассадор'),
-                Tab(text: 'Мастер-эксперт'),
-                Tab(text: 'Топ-мастер'),
-              ],
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(20),
-                itemCount: services.length,
-                itemBuilder: (context, index) {
-                  bool isSelected = selectedServiceIndex == index;
-                  return GestureDetector(
-                    onTap: () => setState(() => selectedServiceIndex = index),
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: isSelected ? null : const Color(0xFF1C1C1E),
-                        gradient: isSelected
-                            ? const LinearGradient(
-                                colors: [Color(0xFFFFFFFF), Color(0xFFFF4D94), Color(0xFFE91E63)],
-                                stops: [0.0, 0.6, 1.0],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              )
-                            : null,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
-                                style: GoogleFonts.montserrat(
-                                  color: isSelected ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                ),
-                                children: [
-                                  TextSpan(text: services[index]['name']),
-                                  TextSpan(
-                                    text: '  ${services[index]['time']}',
-                                    style: TextStyle(
-                                      color: isSelected ? Colors.black54 : Colors.white38,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Text(
-                            services[index]['price'],
-                            style: GoogleFonts.montserrat(
-                              color: isSelected ? Colors.black : Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 15,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isSelected ? Colors.white : Colors.transparent,
-                              border: Border.all(
-                                color: isSelected ? Colors.white : Colors.white24,
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+        child: Stack(
+          children: [ 
+            Center(
+              child: Image.asset(
+                'assets/images/bg2.png',
+                // fit: BoxFit.cover,
+                // color: Colors.black.withValues(alpha: 0.4), 
+                // colorBlendMode: BlendMode.darken,
               ),
             ),
-            _buildBottomNav(1),
+            Column(
+            children: [
+              _buildHeader(context, showBack: true),
+              const RootsLogo(),
+              const SizedBox(height: 4),
+              Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white38)),
+              const SizedBox(height: 20),
+              Text(
+                'ВЫБЕРИТЕ УСЛУГУ',
+                style: GoogleFonts.montserrat(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+              ),
+              const SizedBox(height: 15),
+              TabBar(
+                controller: _tabController,
+                indicatorColor: const Color(0xFFE91E63),
+                indicatorSize: TabBarIndicatorSize.label,
+                dividerColor: Colors.transparent,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white38,
+                labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600, fontSize: 13),
+                tabs: const [
+                  Tab(text: 'Амбассадор'),
+                  Tab(text: 'Мастер-эксперт'),
+                  Tab(text: 'Топ-мастер'),
+                ],
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: services.length,
+                  itemBuilder: (context, index) {
+                    bool isSelected = selectedServiceIndex == index;
+                    return GestureDetector(
+                      onTap: () => setState(() => selectedServiceIndex = index),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: isSelected ? null : const Color(0xFF1C1C1E),
+                          gradient: isSelected
+                              ? const LinearGradient(
+                                  colors: [Color(0xFFFFFFFF), Color(0xFFFF4D94), Color(0xFFE91E63)],
+                                  stops: [0.0, 0.6, 1.0],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                )
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  style: GoogleFonts.montserrat(
+                                    color: isSelected ? Colors.black : Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
+                                  children: [
+                                    TextSpan(text: services[index]['name']),
+                                    TextSpan(
+                                      text: '  ${services[index]['time']}',
+                                      style: TextStyle(
+                                        color: isSelected ? Colors.black54 : Colors.white38,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Text(
+                              services[index]['price'],
+                              style: GoogleFonts.montserrat(
+                                color: isSelected ? Colors.black : Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isSelected ? Colors.white : Colors.transparent,
+                                border: Border.all(
+                                  color: isSelected ? Colors.white : Colors.white24,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              _buildBottomNav(1),
+            ],
+          ),
           ],
         ),
       ),
@@ -298,27 +309,12 @@ class RootsLogo extends StatelessWidget {
   const RootsLogo({super.key});
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          'ROOTS',
-          style: GoogleFonts.montserrat(
-            fontSize: 24,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
-          ),
-        ),
-        Text(
-          "men's cut",
-          style: GoogleFonts.montserrat(
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
-            color: Colors.white54,
-            height: 0.8,
-          ),
-        ),
-      ],
+    return SvgPicture.asset(
+      'assets/images/logo.svg',
+      width: 120,
+      height: 40,
     );
   }
 }
