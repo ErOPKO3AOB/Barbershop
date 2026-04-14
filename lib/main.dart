@@ -89,22 +89,22 @@ class WelcomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildHeader(context),
-                const Spacer(flex: 3),
+                const Spacer(flex: 1),
                 const RootsLogo(),
                 const SizedBox(height: 8),
                 Text(
                   'Бауманская ул 15',
-                  style: GoogleFonts.montserrat(color: Colors.white70, fontSize: 14),
+                  style: GoogleFonts.montserrat(color: Colors.white, fontSize: 17),
                 ),
                 const Spacer(flex: 5),
                 Text(
                   'ОБНОВИ\nСВОЙ СТИЛЬ',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.montserrat(
-                    fontSize: 42,
+                    fontSize: 45,
                     fontWeight: FontWeight.w900,
-                    height: 1.0,
-                    letterSpacing: 1.2,
+                    height: 1.3,
+                    letterSpacing: 1.6,
                   ),
                 ),
                 Padding(
@@ -113,12 +113,13 @@ class WelcomeScreen extends StatelessWidget {
                     'выбери пространство, где каждая стрижка создаётся как персональный шедевр',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.montserrat(
-                      fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.7), // ИСПРАВЛЕНО
+                      fontSize: 16,
+                      color: Colors.white.withValues(alpha: 0.8),
                       height: 1.3,
                     ),
                   ),
                 ),
+                SizedBox(height: 150),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: ElevatedButton(
@@ -197,7 +198,7 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
               _buildHeader(context, showBack: true),
               const RootsLogo(),
               const SizedBox(height: 4),
-              Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white38)),
+              Text('Бауманская ул 15', style: GoogleFonts.montserrat(fontSize: 12, color: Colors.white)),
               const SizedBox(height: 20),
               Text(
                 'ВЫБЕРИТЕ УСЛУГУ',
@@ -228,7 +229,7 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
                       onTap: () => setState(() => selectedServiceIndex = index),
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
-                        height: 60,
+                        height: 48,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
@@ -236,7 +237,7 @@ class _ServicesScreenState extends State<ServicesScreen> with SingleTickerProvid
                           gradient: isSelected
                               ? const LinearGradient(
                                   colors: [Color(0xFFFFFFFF), Color(0xFFFF4D94), Color(0xFFE91E63)],
-                                  stops: [0.0, 0.6, 1.0],
+                                  stops: [0.0, 0.65, 1.0],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 )
