@@ -356,6 +356,6 @@ class RootsLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('assets/images/logo.svg', width: 120, height: 40);
+    return SvgPicture.network(serverPath + 'logo.svg', width: 120, height: 40);
   }
 }
