@@ -1,6 +1,5 @@
 import 'package:barbershop/core/build_bottom_nav.dart';
-import 'package:barbershop/features/service/presentation/service_screen.dart'
-    deferred as services;
+import 'package:barbershop/features/service/presentation/service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,7 +40,7 @@ class WelcomeScreen extends StatelessWidget {
             child: Column(
               children: [
                 const Spacer(flex: 1),
-                services.RootsLogo(),
+                const RootsLogo(),
                 const SizedBox(height: 8),
                 Text(
                   'Бауманская ул 15',
@@ -99,21 +98,12 @@ class WelcomeScreen extends StatelessWidget {
                       ],
                     ),
                     child: ElevatedButton(
-                      onPressed: () async {
-                        showDialog(
-                          context: context,
-                          builder: (_) =>
-                              Center(child: CircularProgressIndicator()),
-                        );
-                        await services.loadLibrary();
-                        Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => services.ServicesScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ServicesScreen(),
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black,
