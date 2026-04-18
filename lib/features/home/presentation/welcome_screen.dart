@@ -1,3 +1,4 @@
+import 'package:barbershop/consts/server_path.dart';
 import 'package:barbershop/core/build_bottom_nav.dart';
 import 'package:barbershop/features/service/presentation/service_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,8 @@ class WelcomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg1.webp',
+            child: Image.network(
+              serverPath + 'bg1.webp',
               fit: BoxFit.cover,
               // color: Colors.black.withValues(alpha: 0.3),
               colorBlendMode: BlendMode.darken,
