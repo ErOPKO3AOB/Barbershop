@@ -31,13 +31,17 @@ class _ServicesScreenState extends State<ServicesScreen>
     {
       'name': 'Александр',
       'role': 'Топ-мастер',
-      'img': 'assets/images/master1.png',
+      'img': 'assets/images/master1.webp',
     },
-    {'name': 'Максим', 'role': 'Мастер', 'img': 'assets/images/master3.png'},
-    {'name': 'Игорь', 'role': 'Топ-мастер', 'img': 'assets/images/master4.png'},
-    {'name': 'Доминик', 'role': 'Эксперт', 'img': 'assets/images/master5.png'},
-    {'name': 'Сергей', 'role': 'Мастер', 'img': 'assets/images/master6.png'},
-    {'name': 'Дмитрий', 'role': 'Эксперт', 'img': 'assets/images/master2.png'},
+    {'name': 'Максим', 'role': 'Мастер', 'img': 'assets/images/master3.webp'},
+    {
+      'name': 'Игорь',
+      'role': 'Топ-мастер',
+      'img': 'assets/images/master4.webp',
+    },
+    {'name': 'Доминик', 'role': 'Эксперт', 'img': 'assets/images/master5.webp'},
+    {'name': 'Сергей', 'role': 'Мастер', 'img': 'assets/images/master6.webp'},
+    {'name': 'Дмитрий', 'role': 'Эксперт', 'img': 'assets/images/master2.webp'},
   ];
 
   // Таб 3: Премиум-пакеты/Акции
@@ -66,7 +70,7 @@ class _ServicesScreenState extends State<ServicesScreen>
         children: [
           // 1. ФОН (Растягивается на весь экран)
           Positioned.fill(
-            child: Image.asset('assets/images/bg2.png', fit: BoxFit.cover),
+            child: Image.asset('assets/images/bg2.webp', fit: BoxFit.cover),
           ),
 
           // 2. КОНТЕНТ

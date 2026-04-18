@@ -12,7 +12,7 @@ class WelcomeScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/bg1.png',
+              'assets/images/bg1.webp',
               fit: BoxFit.cover,
               // color: Colors.black.withValues(alpha: 0.3),
               colorBlendMode: BlendMode.darken,
