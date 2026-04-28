@@ -10,6 +10,9 @@ class RootsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _init();
+
+    // WidgetsBinding.instance.allowFirstFrame();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
@@ -18,6 +21,13 @@ class RootsApp extends StatelessWidget {
       home: const AppContainer(),
     );
   }
+}
+
+Future<void> _init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   WidgetsBinding.instance.deferFirstFrame();
+  // });
 }
 
 class AppContainer extends StatelessWidget {
