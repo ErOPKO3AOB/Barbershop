@@ -1,4 +1,3 @@
-import 'package:barbershop/consts/server_path.dart';
 import 'package:barbershop/core/build_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,17 +32,17 @@ class _ServicesScreenState extends State<ServicesScreen>
     {
       'name': 'Александр',
       'role': 'Топ-мастер',
-      'img': serverPath + 'master1.webp',
+      'img': 'assets/images/master1.webp',
     },
-    {'name': 'Максим', 'role': 'Мастер', 'img': serverPath + 'master3.webp'},
+    {'name': 'Максим', 'role': 'Мастер', 'img': 'assets/images/master3.webp'},
     {
       'name': 'Игорь',
       'role': 'Топ-мастер',
-      'img': serverPath + 'master4.webp',
+      'img': 'assets/images/master4.webp',
     },
-    {'name': 'Доминик', 'role': 'Эксперт', 'img': serverPath + 'master5.webp'},
-    {'name': 'Сергей', 'role': 'Мастер', 'img': serverPath + 'master6.webp'},
-    {'name': 'Дмитрий', 'role': 'Эксперт', 'img': serverPath + 'master2.webp'},
+    {'name': 'Доминик', 'role': 'Эксперт', 'img': 'assets/images/master5.webp'},
+    {'name': 'Сергей', 'role': 'Мастер', 'img': 'assets/images/master6.webp'},
+    {'name': 'Дмитрий', 'role': 'Эксперт', 'img': 'assets/images/master2.webp'},
   ];
 
   // Таб 3: Премиум-пакеты/Акции
@@ -72,7 +71,7 @@ class _ServicesScreenState extends State<ServicesScreen>
         children: [
           // 1. ФОН (Растягивается на весь экран)
           Positioned.fill(
-            child: Image.network(serverPath + 'bg2.webp', fit: BoxFit.cover),
+            child: Image.asset('assets/images/bg2.webp', fit: BoxFit.cover),
           ),
 
           // 2. КОНТЕНТ
@@ -124,7 +123,7 @@ class _ServicesScreenState extends State<ServicesScreen>
                   tabs: const [
                     Tab(text: 'Запись'),
                     Tab(text: 'Наши Мастера'),
-                    Tab(text: 'Топ Мастера'),
+                    Tab(text: 'Комбо'),
                   ],
                 ),
 
@@ -259,7 +258,7 @@ class _ServicesScreenState extends State<ServicesScreen>
                       top: Radius.circular(20),
                     ),
                     image: DecorationImage(
-                      image: NetworkImage(masters[index]['img']!),
+                      image: AssetImage(masters[index]['img']!),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -356,6 +355,6 @@ class RootsLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.network(serverPath + 'logo.svg', width: 120, height: 40);
+    return SvgPicture.asset('assets/images/logo.svg', width: 120, height: 40);
   }
 }
