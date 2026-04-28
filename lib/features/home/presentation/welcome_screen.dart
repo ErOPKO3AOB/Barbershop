@@ -76,7 +76,7 @@ class WelcomeScreen extends StatelessWidget {
 
 /// Виджет выпадающего списка с выбором барбершопа (улицы)
 class _AddressDropdown extends StatefulWidget {
-  const _AddressDropdown({super.key});
+  const _AddressDropdown();
 
   @override
   State<_AddressDropdown> createState() => _AddressDropdownState();
@@ -150,7 +150,7 @@ class _PulsingWord extends StatefulWidget {
   final String text;
   final Duration delay;
 
-  const _PulsingWord(this.text, {required this.delay, super.key});
+  const _PulsingWord(this.text, {required this.delay});
 
   @override
   State<_PulsingWord> createState() => _PulsingWordState();
@@ -238,7 +238,7 @@ Widget _buildOrderButton(BuildContext context) {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.white.withOpacity(0.4),
+            color: const Color.fromARGB(140, 255, 255, 255),
             blurRadius: 25,
             spreadRadius: 2,
           ),

@@ -26,13 +26,11 @@ class _CustomAnimatedBottomNav extends StatelessWidget {
       margin: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
       height: 70,
       decoration: BoxDecoration(
-        color: const Color(
-          0xFF1C1C1E,
-        ).withOpacity(0.95), // Темный стеклянный фон
+        color: const Color.fromARGB(240, 28, 28, 30), // Темный стеклянный фон
         borderRadius: BorderRadius.circular(35),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: const Color.fromARGB(120, 0, 0, 0),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),

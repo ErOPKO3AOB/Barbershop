@@ -167,7 +167,7 @@ class _ServicesScreenState extends State<ServicesScreen>
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: const Color(0xFFE91E63).withOpacity(0.3),
+                            color: const Color.fromARGB(80, 233, 30, 98),
                             blurRadius: 15,
                             offset: const Offset(0, 4),
                           ),
