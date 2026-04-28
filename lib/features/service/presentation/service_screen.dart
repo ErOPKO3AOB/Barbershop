@@ -69,7 +69,7 @@ class _ServicesScreenState extends State<ServicesScreen>
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset('assets/images/bg2.webp', fit: BoxFit.cover),
+            child: Image.network('${serverPath}bg2.webp', fit: BoxFit.cover),
           ),
 
           SafeArea(
@@ -298,7 +298,7 @@ class _ServicesScreenState extends State<ServicesScreen>
                           top: Radius.circular(20),
                         ),
                         image: DecorationImage(
-                          image: AssetImage(masters[index]['img']!),
+                          image: NetworkImage(masters[index]['img']!),
                           fit: BoxFit.cover,
                         ),
                       ),

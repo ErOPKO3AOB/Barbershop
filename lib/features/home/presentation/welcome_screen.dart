@@ -1,4 +1,5 @@
 // welcome_screen.dart
+import 'package:barbershop/consts/server_path.dart';
 import 'package:barbershop/core/build_bottom_nav.dart';
 import 'package:barbershop/core/custom_animations.dart';
 import 'package:barbershop/features/service/presentation/service_screen.dart';
@@ -17,7 +18,7 @@ class WelcomeScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg1.webp'),
+            image: NetworkImage('${serverPath}bg1.webp'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(Colors.black54, BlendMode.darken),
           ),
