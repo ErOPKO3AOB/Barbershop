@@ -86,35 +86,24 @@ class _NavItem extends StatefulWidget {
   State<_NavItem> createState() => _NavItemState();
 }
 
-class _NavItemState extends State<_NavItem>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _bounceController;
-  late Animation<double> _scaleAnimation;
+class _NavItemState extends State<_NavItem> {
+  // Флаг, управляющий анимацией нажатия
+  bool _isPressed = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _bounceController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-    // Анимация уменьшения масштаба до 85% при нажатии
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.85).animate(
-      CurvedAnimation(parent: _bounceController, curve: Curves.easeOutCubic),
-    );
-  }
-
-  @override
-  void dispose() {
-    _bounceController.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() {
+  void _handleTap() async {
     if (widget.currentIndex == widget.index) return;
 
-    // Отпускаем кнопку (возвращаем размер)
-    _bounceController.reverse();
+    // Имитация нажатия – уменьшаем, даём зрителю увидеть анимацию
+    setState(() => _isPressed = true);
+
+    // Короткая пауза, чтобы анимация успела отрисоваться
+    await Future.delayed(const Duration(milliseconds: 80));
+
+    // Возвращаем исходный размер перед переходом
+    setState(() => _isPressed = false);
+
+    // Даём завершиться возвратной анимации
+    await Future.delayed(const Duration(milliseconds: 100));
 
     // Определяем целевой экран
     Widget targetScreen;
@@ -123,10 +112,10 @@ class _NavItemState extends State<_NavItem>
     } else if (widget.index == 1) {
       targetScreen = const ServicesScreen();
     } else {
-      return; // Заглушка для профиля
+      return; // Профиль – заглушка
     }
 
-    // Переход на новый экран
+    // Переход
     Navigator.pushReplacement(
       widget.context,
       PageRouteBuilder(
@@ -136,22 +125,18 @@ class _NavItemState extends State<_NavItem>
             parent: animation,
             curve: Curves.easeOutCubic,
           );
-
-          // Анимация "Действия": контент плавно выплывает снизу вверх (Slide) вместе с появлением (Fade)
           return FadeTransition(
             opacity: curve,
             child: SlideTransition(
               position: Tween<Offset>(
-                begin: const Offset(0.0, 0.05), // Начинает на 5% ниже
+                begin: const Offset(0.0, 0.05),
                 end: Offset.zero,
               ).animate(curve),
               child: child,
             ),
           );
         },
-        transitionDuration: const Duration(
-          milliseconds: 500,
-        ), // Увеличено для наслаждения анимацией
+        transitionDuration: const Duration(milliseconds: 500),
       ),
     );
   }
@@ -161,19 +146,17 @@ class _NavItemState extends State<_NavItem>
     final isSelected = widget.currentIndex == widget.index;
 
     return GestureDetector(
-      // Обработка физики нажатия
-      onTapDown: (_) {
-        if (!isSelected) _bounceController.forward();
-      },
-      onTapUp: (_) => _handleTap(),
-      onTapCancel: () => _bounceController.reverse(),
-
-      child: ScaleTransition(
-        scale: _scaleAnimation,
+      // Обрабатываем только тап, без разделения на down/up
+      onTap: _handleTap,
+      // Для надёжности делаем область попадания полной
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedScale(
+        // При нажатии уменьшаемся до 85%, иначе 1.0
+        scale: _isPressed ? 0.85 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutCubic,
         child: AnimatedContainer(
-          duration: const Duration(
-            milliseconds: 350,
-          ), // Плавное расширение кнопки
+          duration: const Duration(milliseconds: 350),
           curve: Curves.easeOutCubic,
           padding: EdgeInsets.symmetric(
             horizontal: isSelected ? 20 : 12,

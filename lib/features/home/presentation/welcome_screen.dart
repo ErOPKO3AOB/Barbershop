@@ -2,6 +2,7 @@
 import 'package:barbershop/consts/server_path.dart';
 import 'package:barbershop/core/build_bottom_nav.dart';
 import 'package:barbershop/core/custom_animations.dart';
+import 'package:barbershop/features/home/presentation/title_section.dart';
 import 'package:barbershop/features/service/presentation/service_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -41,7 +42,7 @@ class WelcomeScreen extends StatelessWidget {
               const Spacer(flex: 2),
 
               // Заголовок – теперь без жёсткой высоты
-              _TitleSection(),
+              TitleSection(),
 
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -104,7 +105,7 @@ class _AddressDropdownState extends State<_AddressDropdown> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _selectedAddress,
-          dropdownColor: Colors.black.withAlpha(100), // Темный фон для списка
+          dropdownColor: Colors.black.withAlpha(150), // Темный фон для списка
           icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
           isDense: true, // Делает виджет компактным
           style: GoogleFonts.montserrat(
@@ -122,105 +123,6 @@ class _AddressDropdownState extends State<_AddressDropdown> {
           items: _addresses.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(value: value, child: Text(value));
           }).toList(),
-        ),
-      ),
-    );
-  }
-}
-
-/// Заголовок, на 100% стабильный — никаких перестроек
-class _TitleSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min, // теперь только по содержимому
-        children: [
-          const _PulsingWord('ОБНОВИ', delay: Duration.zero),
-          const _PulsingWord('СВОЙ СТИЛЬ', delay: Duration(milliseconds: 200)),
-        ],
-      ),
-    );
-  }
-}
-
-/// Каждое слово – это просто текстовый виджет, обёрнутый в Animate со scale
-class _PulsingWord extends StatefulWidget {
-  final String text;
-  final Duration delay;
-
-  const _PulsingWord(this.text, {required this.delay});
-
-  @override
-  State<_PulsingWord> createState() => _PulsingWordState();
-}
-
-class _PulsingWordState extends State<_PulsingWord>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _pulseController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    // Запускаем вход через flutter_animate, а потом включаем пульсацию
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(600.ms + widget.delay, () {
-        if (mounted) {
-          _pulseController.repeat(reverse: true);
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Animate(
-      // Чистый flutter_animate для входной анимации
-      effects: [
-        ScaleEffect(
-          begin:
-              Offset.zero, // на самом деле 0.7, но ScaleEffect принимает Offset
-          end: const Offset(1.0, 1.0),
-          duration: 600.ms,
-          curve: Curves.easeOut,
-        ),
-      ],
-      child: SizedBox(
-        height: 65,
-        child: Center(
-          child: AnimatedBuilder(
-            animation: _pulseController,
-            builder: (context, child) {
-              final scale = 1.0 + (_pulseController.value * 0.06);
-              return Transform.scale(
-                scale: scale,
-                alignment: Alignment.center,
-                child: child,
-              );
-            },
-            child: Text(
-              widget.text,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.montserrat(
-                color: Colors.white,
-                fontSize: 45,
-                fontWeight: FontWeight.w900,
-                height: 1.1,
-              ),
-            ),
-          ),
         ),
       ),
     );
