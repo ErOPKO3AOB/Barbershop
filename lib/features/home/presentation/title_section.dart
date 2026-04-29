@@ -18,12 +18,17 @@ class _TitleSectionState extends State<TitleSection>
   late Animation<Offset> _slideSecond;
 
   final List<WordSettings> words = [
-    WordSettings(text: 'ОБНОВИ', animMs: 1400, delayBefore: 1000, scale: 1.1),
-    WordSettings(text: 'СВОЙ', animMs: 1400, delayBefore: 70, scale: 1.1),
-    WordSettings(text: 'СТИЛЬ', animMs: 2000, delayBefore: 0, scale: 1.2),
+    WordSettings(
+      text: 'ОБНОВИ',
+      animMs: 1400,
+      delayBefore: 600,
+      scale: 1.00625,
+    ),
+    WordSettings(text: 'СВОЙ', animMs: 1400, delayBefore: 70, scale: 1.00625),
+    WordSettings(text: 'СТИЛЬ', animMs: 2500, delayBefore: 0, scale: 1.025),
   ];
 
-  final int finalPause = 2200;
+  final int finalPause = 100;
   late int totalDuration;
 
   @override
@@ -57,7 +62,7 @@ class _TitleSectionState extends State<TitleSection>
     ).animate(CurvedAnimation(parent: _introController, curve: Curves.easeOut));
 
     // Запуск интро с задержкой 600 мс
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 20), () {
       if (mounted) _introController.forward();
     });
 
@@ -133,7 +138,6 @@ class _TitleSectionState extends State<TitleSection>
           // После интро анимация пульсации может выходить за рамки — обрезание не нужно
           return child!;
         } else {
-          // Во время интро обрезаем область, чтобы строки не были видны с краёв
           return ClipRect(child: child);
         }
       },
@@ -164,23 +168,20 @@ class _TitleSectionState extends State<TitleSection>
       scale = 1.0 + (settings.scale - 1.0) * bell;
       sidePadding = 12.0 * bell;
 
-      // Дополнительный всплеск (более заметен у последнего слова, но применяется всем)
       const double extraScale = 0.15;
       double slowFactor = math.sin(localT * math.pi) * 0.7;
       scale += extraScale * slowFactor.clamp(0.0, 1.0);
 
       // Цветовой акцент (красноватый оттенок)
       const Color shimmerColor = Color.fromARGB(255, 230, 100, 100);
+
       double colorIntensity = slowFactor.clamp(0.0, 1.0);
       wordColor = Color.lerp(Colors.white, shimmerColor, colorIntensity)!;
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: sidePadding),
-      child: Transform.scale(
-        scale: scale,
-        child: Text(settings.text, style: style.copyWith(color: wordColor)),
-      ),
+    return Transform.scale(
+      scale: scale,
+      child: Text(settings.text, style: style.copyWith(color: wordColor)),
     );
   }
 }
