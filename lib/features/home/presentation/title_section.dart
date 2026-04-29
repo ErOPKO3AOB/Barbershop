@@ -62,16 +62,13 @@ class _TitleSectionState extends State<TitleSection>
     ).animate(CurvedAnimation(parent: _introController, curve: Curves.easeOut));
 
     // Запуск интро с задержкой 600 мс
-    Future.delayed(const Duration(milliseconds: 20), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) _introController.forward();
     });
 
-    // После завершения интро пауза 1000 мс, затем цикл
     _introController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 1000), () {
-          if (mounted) _loopController.repeat();
-        });
+        if (mounted) _loopController.repeat();
       }
     });
   }

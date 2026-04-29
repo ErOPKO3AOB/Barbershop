@@ -149,124 +149,17 @@ class _ServicesScreenState extends State<ServicesScreen>
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 100),
       itemCount: services.length,
       itemBuilder: (context, index) {
-        bool isSelected = selectedServiceIndex == index;
-        return GestureDetector(
-              onTap: () => setState(() => selectedServiceIndex = index),
-              child: AnimatedContainer(
-                duration: const Duration(
-                  milliseconds: 350,
-                ), // Плавность перехода
-                curve: Curves.easeOutCubic,
-                margin: const EdgeInsets.only(bottom: 12),
-                // Выбранный элемент чуть увеличивается в высоту для выделения
-                height: isSelected ? 56 : 48,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: isSelected ? null : const Color(0xFF1C1C1E),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: const Color.fromARGB(80, 233, 30, 98),
-                            blurRadius: 15,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : [],
-                  gradient: isSelected
-                      ? const LinearGradient(
-                          colors: [
-                            Color(0xFFFFFFFF),
-                            Color(0xFFFF4D94),
-                            Color(0xFFE91E63),
-                          ],
-                          stops: [0.0, 0.65, 1.0],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        )
-                      : null,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          // Анимируем стиль названия услуги
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 350),
-                            style: GoogleFonts.montserrat(
-                              color: isSelected ? Colors.black : Colors.white,
-                              fontWeight: isSelected
-                                  ? FontWeight.w700
-                                  : FontWeight.w600,
-                              fontSize: isSelected ? 16 : 15,
-                            ),
-                            child: Text(services[index]['name']),
-                          ),
-                          const SizedBox(width: 8),
-                          // Анимируем стиль времени услуги
-                          AnimatedDefaultTextStyle(
-                            duration: const Duration(milliseconds: 350),
-                            style: GoogleFonts.montserrat(
-                              color: isSelected
-                                  ? Colors.black54
-                                  : Colors.white38,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                            ),
-                            child: Text(services[index]['time']),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Анимируем цену
-                    AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 350),
-                      style: GoogleFonts.montserrat(
-                        color: isSelected ? Colors.black : Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: isSelected ? 17 : 15,
-                      ),
-                      child: Text(services[index]['price']),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // Анимируем "Кружок" - радиокнопку
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 350),
-                      width: 22,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected ? Colors.white : Colors.transparent,
-                        border: Border.all(
-                          color: isSelected ? Colors.white : Colors.white24,
-                          width: isSelected ? 6 : 1.5,
-                        ),
-                      ),
-                      child: isSelected
-                          ? const Center(
-                              child: Icon(
-                                Icons.check,
-                                size: 10,
-                                color: Color(0xFFE91E63),
-                              ),
-                            ).animate().scale(
-                              delay: 150.ms,
-                              duration: 250.ms,
-                              curve: Curves.easeOutBack,
-                            )
-                          : null,
-                    ),
-                  ],
-                ),
-              ),
-            )
-            .animate() // Каскадное выплывание всего списка при открытии
-            .fadeIn(delay: (index * 40).ms, duration: 300.ms)
-            .slideX(begin: 0.05, end: 0, curve: Curves.easeOut);
+        return ServiceItem(
+          key: ValueKey(index), // стабильный ключ, чтобы не пересоздавать
+          data: services[index],
+          isSelected: selectedServiceIndex == index,
+          animationDelay: Duration(milliseconds: index * 40),
+          onTap: () {
+            setState(() {
+              selectedServiceIndex = index;
+            });
+          },
+        );
       },
     );
   }
@@ -392,6 +285,186 @@ class _ServicesScreenState extends State<ServicesScreen>
             .fadeIn(delay: (index * 80).ms)
             .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
       },
+    );
+  }
+}
+
+class ServiceItem extends StatefulWidget {
+  final Map<String, dynamic> data;
+  final bool isSelected;
+  final Duration animationDelay;
+  final VoidCallback onTap;
+
+  const ServiceItem({
+    super.key,
+    required this.data,
+    required this.isSelected,
+    required this.animationDelay,
+    required this.onTap,
+  });
+
+  @override
+  State<ServiceItem> createState() => _ServiceItemState();
+}
+
+class _ServiceItemState extends State<ServiceItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _bounceCtrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceCtrl = AnimationController(vsync: this, duration: 400.milliseconds);
+  }
+
+  @override
+  void didUpdateWidget(covariant ServiceItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // При изменении выбора запускаем "пружинистую" анимацию
+    if (oldWidget.isSelected != widget.isSelected && widget.isSelected) {
+      _bounceCtrl.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _bounceCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isSel = widget.isSelected;
+
+    // Основной контейнер с анимированным скейлом от _bounceCtrl
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _bounceCtrl,
+        builder: (context, child) {
+          // Кривая "пружина" только при выделении, иначе возвращаем обычный размер
+          double scale = isSel
+              ? 1.0 +
+                    (_bounceCtrl.value == 0.0
+                        ? 0.0
+                        : Curves.easeOutBack.transform(_bounceCtrl.value) *
+                              0.03)
+              : 1.0;
+          return Transform.scale(scale: scale, child: child);
+        },
+        child:
+            Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  height: isSel ? 56 : 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: isSel ? null : const Color(0xFF1C1C1E),
+                    boxShadow: isSel
+                        ? [
+                            BoxShadow(
+                              color: const Color(0xFFE91E63).withOpacity(0.35),
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
+                            ),
+                          ]
+                        : [],
+                    gradient: isSel
+                        ? const LinearGradient(
+                            colors: [
+                              Color(0xFFFFFFFF),
+                              Color(0xFFFF4D94),
+                              Color(0xFFE91E63),
+                            ],
+                            stops: [0.0, 0.65, 1.0],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          )
+                        : null,
+                  ),
+                  // Здесь используем AnimatedContainer только для плавного изменения размера и фона
+                  // (можно оставить как есть, но для оптимизации убрали задержки flutter_animate)
+                  // А текст, цена и кружок анимируем отдельно через AnimatedDefaultTextStyle и AnimatedContainer
+                  child: _buildContent(isSel),
+                )
+                .animate() // анимация появления только при первом показе
+                .fadeIn(delay: widget.animationDelay, duration: 300.ms)
+                .slideX(begin: 0.05, end: 0, curve: Curves.easeOut),
+      ),
+    );
+  }
+
+  Widget _buildContent(bool isSel) {
+    return Row(
+      children: [
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              AnimatedDefaultTextStyle(
+                duration: 350.milliseconds,
+                style: GoogleFonts.montserrat(
+                  color: isSel ? Colors.black : Colors.white,
+                  fontWeight: isSel ? FontWeight.w700 : FontWeight.w600,
+                  fontSize: isSel ? 16 : 15,
+                ),
+                child: Text(widget.data['name']),
+              ),
+              const SizedBox(width: 8),
+              AnimatedDefaultTextStyle(
+                duration: 350.milliseconds,
+                style: GoogleFonts.montserrat(
+                  color: isSel ? Colors.black54 : Colors.white38,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+                child: Text(widget.data['time']),
+              ),
+            ],
+          ),
+        ),
+        AnimatedDefaultTextStyle(
+          duration: 350.milliseconds,
+          style: GoogleFonts.montserrat(
+            color: isSel ? Colors.black : Colors.white,
+            fontWeight: FontWeight.w800,
+            fontSize: isSel ? 17 : 15,
+          ),
+          child: Text(widget.data['price']),
+        ),
+        const SizedBox(width: 12),
+        // Кружок-галочка с живой анимацией
+        AnimatedContainer(
+          duration: 350.milliseconds,
+          width: 22,
+          height: 22,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: isSel ? Colors.white : Colors.transparent,
+            border: Border.all(
+              color: isSel ? Colors.white : Colors.white24,
+              width: isSel ? 6 : 1.5,
+            ),
+          ),
+          child: isSel
+              ? Icon(Icons.check, size: 12, color: const Color(0xFFE91E63))
+                    .animate()
+                    .scale(
+                      delay: 150.ms,
+                      duration: 250.ms,
+                      curve: Curves.easeOutBack,
+                    )
+                    .rotate(
+                      begin: -0.2,
+                      end: 0,
+                      delay: 150.ms,
+                      duration: 250.ms,
+                      curve: Curves.easeOutBack,
+                    )
+              : null,
+        ),
+      ],
     );
   }
 }
